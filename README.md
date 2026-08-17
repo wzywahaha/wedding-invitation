@@ -91,31 +91,30 @@ var CONFIG = {
 - 同理可 base64 内嵌（方法同照片，前缀为 `data:audio/mpeg;base64,`）。
 - 没放音乐文件时按钮会变灰，放入文件后自动恢复。
 
-## 六、部署到 GitHub Pages（获得可分享的链接）
+## 六、线上地址与后续更新
 
-> 为什么需要部署：**微信里直接发 HTML 文件，苹果手机无法预览**（安卓可以）。部署后得到链接，发链接给好友，安卓/苹果/电脑都能打开。
+**已部署完成** ✅ 线上地址：
 
-1. 注册 [GitHub](https://github.com) 账号（免费）。
-2. 本文件夹已是一个 git 仓库，在文件夹里打开终端（Git Bash），依次运行：
+> **https://wzywahaha.github.io/wedding-invitation/**
+
+在电脑微信或手机微信里把这个链接发给好友即可（对方点开直接看）。
+
+**后续更新**（改完内容让线上生效）：
+1. 改完 HTML 文件保存；
+2. 在本文件夹打开终端（Git Bash），运行：
    ```bash
-   git add -A
-   git commit -m "婚礼邀请函"
-   git branch -M main
-   git remote add origin https://github.com/你的用户名/wedding-invitation.git
-   git push -u origin main
+   git add -A && git commit -m "更新" && git push
    ```
-3. 打开 GitHub 网页 → 你的仓库 → **Settings → Pages** → Source 选 `main` 分支 → Save。
-4. 约 1~2 分钟后，访问 `https://你的用户名.github.io/wedding-invitation/` 即可看到邀请函目录页。
-5. 把这个链接复制到微信，发给好友。
+3. 约 1 分钟后线上生效（微信里让对方下拉刷新页面）。
 
-**后续更新**：改完文件后运行 `git add -A && git commit -m "更新" && git push`，约 1 分钟后线上生效。
+> 部署通道说明：本机访问 GitHub 主站受限，已配置 SSH over 443 推送通道（`~/.ssh/config`），后续 push 直接可用，无需重复配置。仓库地址：`github.com/wzywahaha/wedding-invitation`。
 
 ## 七、微信发送注意事项
 
 - ✅ 发**链接**给好友：安卓 / iOS / 电脑微信均可直接打开，体验最好。
 - ✅ 发 HTML **文件**：安卓可直接打开；**iOS 无法预览**（长按 → 用其他应用打开 → Safari 才行），不推荐发给用苹果手机的长辈。
 - ✅ 音乐需点击页面右下角按钮后播放（微信限制）。
-- ✅ 分享链接卡片显示标题与缩略图：靠文件 `<head>` 里的 `og:title` / `og:image` 标签，替换名字/照片后记得同步更新（`og:image` 需填写部署后的绝对地址）。
+- ✅ 分享链接卡片显示标题与缩略图：靠文件 `<head>` 里的 `og:title` / `og:image` 标签（`og:image` 已填好线上绝对地址）。**替换名字/照片后记得同步更新 og:title 并放置 cover.jpg**（部署后微信卡片即显示真实照片）。
 - ⚠️ GitHub Pages 仓库默认公开：邀请函内容本就面向所有宾客公开，属正常情况；但请勿把家庭住址等隐私写进邀请函。
 - ⚠️ 若个别网络环境打开慢，可让对方稍后重试，或直接把 HTML 文件发给对方在浏览器打开。
 
