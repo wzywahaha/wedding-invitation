@@ -72,16 +72,18 @@ var CONFIG = {
      coverPhoto: "data:image/jpeg;base64,粘贴刚才复制的内容",
      ```
 
-## 四、小地图（高德 / 百度 iframe）
+## 四、小地图（已嵌入高德地图，无需 Key）
 
-每个文件底部"交通指引"区域有一个地图占位框，把真实地图嵌入代码**直接粘贴进 HTML** 的 `<div class="map-box">` 注释处（`⬇⬇⬇` 标记的位置），粘贴后占位提示自动被覆盖，无需删除任何东西。
+三版文件均已嵌入**十堰市武当国际酒店**的地图（高德 URI 接口，无需 API Key，访客可缩放查看、可唤起手机高德 App 导航）。
 
-**获取嵌入代码（二选一）：**
+**更换地点**：打开任意 HTML 文件，搜索 `uri.amap.com/marker`，修改 iframe 的 `src` 参数：
 
-- **高德地图**：打开 [https://lbs.amap.com/tools/picker](https://lbs.amap.com/tools/picker) → 搜索酒店 → 点击地点 → 点"分享" → 复制"网页嵌入代码"
-- **百度地图**：打开 [https://api.map.baidu.com/lbsapi/getpoint/](https://api.map.baidu.com/lbsapi/getpoint/) → 搜索地点 → 点"获取代码"
+- `position=经度,纬度`（高德坐标系，两个数字用英文逗号隔开）
+- `name=地点名称`
 
-**注意**：只粘贴纯 `<iframe ...>...</iframe>` 标签；**不要**粘贴包含 `<script>` 的 JS API 代码（会导致页面出错）。地图会吞掉手指在地图区域内的滑动手势，属正常现象，在地图外滑动页面即可。
+**获取新地点坐标的方式**：高德网页地图 [www.amap.com](https://www.amap.com) 搜索地点 → 点「分享」→ 复制链接，链接里 `position=` 后的两个数字就是坐标（无需登录）。手机高德 App 同理。
+
+**注意**：地图会吞掉手指在地图区域内的滑动手势，属正常现象，在地图外滑动页面即可。
 
 ## 五、背景音乐
 

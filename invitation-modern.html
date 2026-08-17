@@ -593,11 +593,10 @@ body.ready .hero-inner { opacity: 1; transform: none; }
       </div>
     </div>
     <div class="map-box reveal">
-      <!-- ⬇⬇⬇ 在这里粘贴高德/百度地图的 iframe 嵌入代码（粘贴后自动覆盖下方占位提示）⬇⬇⬇
-           获取方法（详见 README.md）：
-           高德：https://lbs.amap.com/tools/picker → 搜索地点 → 点击分享 → 复制"网页嵌入代码"
-           百度：https://api.map.baidu.com/lbsapi/getpoint/ → 搜索地点 → 复制"获取代码"
-           注意：只粘贴纯 <iframe> 标签，不要粘贴含 <script> 的 JS API 代码 -->
+      <!-- ⬇⬇⬇ 地图已嵌入：十堰市武当国际酒店（高德 URI 接口，无需 Key）。
+           如需更换地点：改上方 iframe 的 position=经度,纬度 与 name=名称 参数即可，
+           新坐标可在高德网页地图 www.amap.com 搜索地点后从分享链接中获得（详见 README.md）-->
+      <iframe src="https://uri.amap.com/marker?position=110.78,32.65&name=%E5%8D%81%E5%A0%B0%E5%B8%82%E6%AD%A6%E5%BD%93%E5%9B%BD%E9%99%85%E9%85%92%E5%BA%97&coordinate=gaode&callnative=1" frameborder="0" allowfullscreen></iframe>
       <div class="map-placeholder">
         <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8C867C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11z"/>
@@ -632,16 +631,16 @@ var CONFIG = {
   dateText: "2026年10月1日 · 星期四",
   lunarText: "农历八月廿一",
   timeText: "11:08",
-  hotelName: "某某大酒店 · 三楼宴会厅",
-  address: "XX市XX区XX路88号",
+  hotelName: "十堰市武当国际酒店",
+  address: "十堰市茅箭区朝阳中路25号",
   invitee: "尊敬的宾客",
   schedule1Time: "10:00", schedule1Text: "迎宾签到",
   schedule2Time: "11:08", schedule2Text: "婚礼仪式",
   schedule3Time: "12:00", schedule3Text: "喜宴开席",
   schedule4Time: "14:00", schedule4Text: "合影留念",
-  traffic1: "地铁 X 号线至 X 站，出站步行 5 分钟",
+  traffic1: "",
   traffic2: "公交 X 路至 X 站，下车即达",
-  traffic3: "自驾导航搜索「某某大酒店」，停车场免费",
+  traffic3: "自驾导航搜索「十堰市武当国际酒店」",
   coverPhoto: "",
   musicSrc: "music.mp3"
 };
