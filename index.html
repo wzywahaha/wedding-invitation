@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>张伟 &amp; 李婷 的婚礼邀请函 · 三款风格</title>
+<meta property="og:title" content="张伟 &amp; 李婷 的婚礼邀请函">
+<meta property="og:description" content="2026年10月1日 · 星期四 · 某某大酒店 诚邀您的光临">
+<meta property="og:image" content="https://替换为你的用户名.github.io/wedding-invitation/cover.jpg">
+<meta property="og:type" content="website">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+  background: #FBF9F5;
+  color: #33302B;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+}
+.head { text-align: center; margin-bottom: 40px; }
+.head .en {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: .42em;
+  color: #B99A5E;
+  display: block;
+  margin-bottom: 10px;
+}
+.head .cn {
+  font-family: Georgia, "Times New Roman", "Songti SC", "STSong", "SimSun", serif;
+  font-size: 24px;
+  letter-spacing: .3em;
+  text-indent: .3em;
+}
+.head .sub {
+  margin-top: 8px;
+  font-size: 13px;
+  letter-spacing: .2em;
+  color: #8C867C;
+}
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 420px;
+}
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #FFFFFF;
+  border: 1px solid #E5E0D6;
+  border-radius: 12px;
+  padding: 20px 22px;
+  box-shadow: 0 8px 24px rgba(51,48,43,.06);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(51,48,43,.12); }
+.card .row { display: flex; align-items: center; gap: 16px; }
+.swatch {
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+.swatch.modern { background: linear-gradient(135deg, #FBF9F5 40%, #B99A5E 41%, #B99A5E 52%, #FBF9F5 53%); }
+.swatch.chinese { background: linear-gradient(135deg, #9A2433 50%, #C9A227 51%, #C9A227 62%, #F7EFDF 63%); }
+.swatch.forest { background: linear-gradient(135deg, #F7F5EE 40%, #6F7D5C 41%, #6F7D5C 52%, #C2A98F 53%); }
+.card .name { font-size: 16px; letter-spacing: .14em; }
+.card .desc { margin-top: 4px; font-size: 12px; color: #8C867C; letter-spacing: .06em; }
+.card .go {
+  margin-left: auto;
+  font-size: 12px;
+  color: #B99A5E;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+.foot { margin-top: 40px; font-size: 12px; color: #8C867C; letter-spacing: .2em; }
+@media (min-width: 768px) {
+  .head .cn { font-size: 30px; }
+  .cards { flex-direction: row; max-width: 860px; gap: 24px; }
+  .card { flex: 1; }
+  .card .row { flex-direction: column; text-align: center; gap: 12px; }
+  .card .go { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+  <div class="head">
+    <span class="en">Wedding Invitation</span>
+    <span class="cn">张伟 &amp; 李婷</span>
+    <p class="sub">婚礼邀请函 · 三款风格</p>
+  </div>
+  <div class="cards">
+    <a class="card" href="invitation-modern.html">
+      <div class="row">
+        <span class="swatch modern"></span>
+        <span class="name">现代简约</span>
+        <span class="desc">暖白 · 香槟金 · 留白</span>
+        <span class="go">进入 →</span>
+      </div>
+    </a>
+    <a class="card" href="invitation-chinese.html">
+      <div class="row">
+        <span class="swatch chinese"></span>
+        <span class="name">中式红金</span>
+        <span class="desc">中国红 · 鎏金 · 囍字</span>
+        <span class="go">进入 →</span>
+      </div>
+    </a>
+    <a class="card" href="invitation-forest.html">
+      <div class="row">
+        <span class="swatch forest"></span>
+        <span class="name">森系清新</span>
+        <span class="desc">奶白 · 浅绿 · 花艺</span>
+        <span class="go">进入 →</span>
+      </div>
+    </a>
+  </div>
+  <p class="foot">点击任意风格预览邀请函</p>
+</body>
+</html>

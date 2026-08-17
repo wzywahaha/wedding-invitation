@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>张伟 &amp; 李婷 的婚礼邀请函</title>
+<!-- ═══════════ 微信分享卡片（部署到 GitHub Pages 后请把 og:image 替换为绝对地址）═══════════ -->
+<meta property="og:title" content="张伟 &amp; 李婷 的婚礼邀请函">
+<meta property="og:description" content="2026年10月1日 · 星期四 · 某某大酒店 诚邀您的光临">
+<meta property="og:image" content="https://替换为你的用户名.github.io/wedding-invitation/cover.jpg">
+<meta property="og:type" content="website">
+<style>
+/* ═══════════ ① 变量 ═══════════ */
+:root {
+  --red: #8C1F28;         /* 正红 */
+  --red-deep: #7A1720;    /* 深红 */
+  --red-bg1: #9A2433;     /* 背景渐变上 */
+  --red-bg2: #6E141D;     /* 背景渐变下 */
+  --paper: #F7EFDF;       /* 请柬纸米色 */
+  --paper-deep: #EFE3C8;
+  --gold: #C9A227;        /* 鎏金 */
+  --gold-light: #D8B25C;
+  --ink: #3A2E22;         /* 深棕文字 */
+  --sub: #8A6D3F;
+  --serif: "Songti SC", "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --kai: "Kaiti SC", "STKaiti", "KaiTi", "Songti SC", "SimSun", serif;
+  --sans: -apple-system, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+/* ═══════════ ② reset ═══════════ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink);
+  background-color: var(--red-bg2);
+  background-image:
+    radial-gradient(rgba(255, 235, 200, .05) 1px, transparent 1.4px),
+    linear-gradient(160deg, var(--red-bg1) 0%, var(--red-bg2) 100%);
+  background-size: 22px 22px, 100% 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.hidden { display: none !important; }
+img { display: block; }
+
+/* ═══════════ ③ 花瓣 ═══════════ */
+.petals {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+.petal {
+  position: absolute;
+  top: -6vh;
+  border-radius: 80% 0 80% 0;
+  background: linear-gradient(135deg, #C0392B 0%, #A83240 60%, #8C1F28 100%);
+  opacity: var(--op, .5);
+  will-change: transform;
+  animation: petal-fall var(--dur) linear var(--delay) infinite;
+}
+.petal:nth-child(4n) {          /* 每隔 4 片混入金色圆点（金屑） */
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #E8CF8F, #C9A227 70%);
+  width: 7px !important;
+  height: 7px !important;
+}
+@keyframes petal-fall {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(var(--drift), 28vh, 0) rotate(var(--rot1)); }
+  50%  { transform: translate3d(var(--driftN), 56vh, 0) rotate(var(--rot2)); }
+  75%  { transform: translate3d(var(--drift), 84vh, 0) rotate(var(--rot3)); }
+  100% { transform: translate3d(var(--driftN), 112vh, 0) rotate(var(--rot4)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .petals { display: none; }
+}
+
+/* ═══════════ ④ 音乐按钮 ═══════════ */
+.music-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 24px;
+  width: 48px; height: 48px;
+  border: 1px solid rgba(201, 162, 39, .8);
+  border-radius: 50%;
+  background: rgba(140, 31, 40, .92);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .35);
+  z-index: 10;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.music-btn svg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.music-btn .disc {
+  position: absolute;
+  top: -3px; left: -3px;
+  width: 54px; height: 54px;
+  border: 1px dashed var(--gold-light);
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+  animation-play-state: paused;
+}
+.music-btn.playing .disc { animation-play-state: running; }
+.music-btn.music-error { opacity: .35; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* ═══════════ ⑤ 封面 hero ═══════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 20px 72px;
+}
+.hero-inner { opacity: 0; transform: translateY(18px); transition: opacity 1.2s ease, transform 1.2s ease; }
+body.ready .hero-inner { opacity: 1; transform: none; }
+
+/* 请柬纸卡（金双线边 + 四角角花） */
+.chinese-card {
+  position: relative;
+  background: var(--paper);
+  background-image: radial-gradient(rgba(201, 162, 39, .05) 1px, transparent 1.4px);
+  background-size: 18px 18px;
+  border: 1px solid var(--gold);
+  padding: 26px 28px 30px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .38);
+}
+.chinese-card::before {              /* 内衬金线 */
+  content: "";
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border: 1px solid rgba(201, 162, 39, .65);
+  pointer-events: none;
+}
+.chinese-card > * { position: relative; z-index: 1; }
+.corner {
+  position: absolute;
+  width: 18px; height: 18px;
+  border-top: 2px solid var(--gold);
+  border-left: 2px solid var(--gold);
+  z-index: 2;
+}
+.corner.tl { top: 10px; left: 10px; }
+.corner.tr { top: 10px; right: 10px; transform: rotate(90deg); }
+.corner.br { bottom: 10px; right: 10px; transform: rotate(180deg); }
+.corner.bl { bottom: 10px; left: 10px; transform: rotate(270deg); }
+
+.hero-card {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+.clouds {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.xi-badge {
+  width: 74px; height: 74px;
+  margin: 0 auto 16px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 4px var(--paper), 0 0 0 5px var(--gold-light);
+  color: var(--gold-light);
+  font-family: var(--serif);
+  font-size: 40px;
+  line-height: 74px;
+  text-align: center;
+}
+.cover-photo {
+  position: relative;
+  width: 150px; height: 190px;
+  margin: 0 auto 18px;
+  border: 1px solid var(--gold);
+  background: linear-gradient(160deg, #F0E7D3 0%, #E3D3AF 100%);
+  overflow: hidden;
+}
+.cover-photo::after {
+  content: "";
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid rgba(201, 162, 39, .55);
+  pointer-events: none;
+}
+.cover-photo.has-photo::after { display: none; }
+.cover-photo img { width: 100%; height: 100%; object-fit: cover; }
+.photo-hint {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--sub);
+  font-size: 11px;
+  letter-spacing: .2em;
+}
+.photo-hint svg { opacity: .55; }
+.cover-photo.has-photo .photo-hint { display: none; }
+.hero-names {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: normal;
+  letter-spacing: .28em;
+  text-indent: .28em;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+.hero-names .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin: 0 10px;
+  vertical-align: 8px;
+}
+.gold-dash {
+  width: 76%;
+  margin: 0 auto 14px;
+  border-top: 1px dashed var(--gold);
+}
+.hero-date {
+  font-family: var(--serif);
+  font-size: 16px;
+  letter-spacing: .14em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.hero-lunar {
+  font-size: 13px;
+  letter-spacing: .3em;
+  color: var(--sub);
+  margin-bottom: 14px;
+}
+.hero-word {
+  font-family: var(--kai);
+  font-size: 15px;
+  letter-spacing: .3em;
+  color: var(--red);
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-light);
+  font-size: 11px;
+  letter-spacing: .5em;
+  animation: float 2.4s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+
+/* ═══════════ ⑥ 邀请正文（竖排） ═══════════ */
+.invite { padding: 24px 20px 40px; }
+.invite-card { max-width: 400px; margin: 0 auto; }
+.invite-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  letter-spacing: .5em;
+  text-indent: .5em;
+  color: var(--red);
+  text-align: center;
+  margin-bottom: 18px;
+}
+.vertical {
+  -webkit-writing-mode: vertical-rl;
+  writing-mode: vertical-rl;
+  -webkit-text-orientation: upright;
+  text-orientation: upright;
+  font-family: var(--kai);
+  font-size: 17px;
+  letter-spacing: .42em;
+  line-height: 2;
+  color: var(--ink);
+  min-height: 320px;
+  margin: 0 auto;
+}
+.vertical .em { color: var(--red); }
+.vertical .brk { display: block; height: 1.2em; }
+
+/* ═══════════ ⑦ 婚礼信息 ═══════════ */
+.info { padding: 0 20px 40px; }
+.info-card { max-width: 400px; margin: 0 auto; }
+.section-head {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.section-head .cn {
+  font-family: var(--serif);
+  font-size: 20px;
+  letter-spacing: .5em;
+  text-indent: .5em;
+  color: var(--gold-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+}
+.section-head .bar {
+  width: 46px;
+  margin: 10px auto 0;
+  border-top: 1px solid var(--gold);
+}
+.info-row {
+  padding: 12px 4px;
+  border-bottom: 1px dashed rgba(201, 162, 39, .5);
+  text-align: center;
+}
+.info-row:last-of-type { border-bottom: none; }
+.info-row .label {
+  font-size: 12px;
+  letter-spacing: .4em;
+  color: var(--sub);
+  display: block;
+  margin-bottom: 2px;
+}
+.info-row .value {
+  font-family: var(--serif);
+  font-size: 16px;
+  letter-spacing: .08em;
+  color: var(--ink);
+}
+.schedule { margin-top: 20px; }
+.schedule-title {
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: .5em;
+  color: var(--red);
+  margin-bottom: 16px;
+}
+.schedule-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.schedule-item .s-time {
+  flex: 0 0 62px;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  letter-spacing: .06em;
+  color: var(--red);
+  text-align: right;
+}
+.schedule-item .s-dot {
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.schedule-item .s-dot::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, .3);
+}
+.schedule-item .s-text {
+  flex: 1;
+  font-size: 15px;
+  letter-spacing: .12em;
+  color: var(--ink);
+}
+
+/* ═══════════ ⑧ 地图与交通 ═══════════ */
+.map-section { padding: 0 20px 40px; }
+.traffic-list { max-width: 400px; margin: 0 auto 24px; }
+.traffic-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 4px;
+}
+.traffic-item .t-icon {
+  flex: 0 0 40px;
+  color: var(--red);
+  padding-top: 2px;
+}
+.traffic-item .t-text {
+  flex: 1;
+  font-size: 14.5px;
+  color: var(--ink);
+  letter-spacing: .04em;
+}
+.map-box {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+  padding-bottom: 78%;
+  overflow: hidden;
+  border: 1px solid var(--gold);
+  background: var(--paper);
+}
+.map-box iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+.map-placeholder {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 2px dashed var(--gold);
+  color: var(--sub);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-align: center;
+  padding: 20px;
+  background: var(--paper);
+}
+.map-placeholder svg { opacity: .55; }
+
+/* ═══════════ ⑨ 页脚 ═══════════ */
+.footer {
+  padding: 20px 20px 90px;
+  text-align: center;
+}
+.footer-inner { max-width: 400px; margin: 0 auto; }
+.seal {
+  display: inline-block;
+  background: var(--red);
+  color: var(--paper);
+  font-family: var(--kai);
+  font-size: 15px;
+  letter-spacing: .18em;
+  padding: 14px 10px;
+  -webkit-writing-mode: vertical-rl;
+  writing-mode: vertical-rl;
+  border: 1px solid rgba(247, 239, 223, .9);
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+  transform: rotate(-7deg);
+  margin-bottom: 34px;
+}
+.footer-names {
+  font-family: var(--serif);
+  font-size: 17px;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--gold-light);
+  margin-bottom: 8px;
+}
+.footer-date {
+  font-family: Georgia, serif;
+  font-size: 12px;
+  letter-spacing: .3em;
+  color: rgba(247, 239, 223, .7);
+}
+
+/* ═══════════ ⑩ 滚动淡入 ═══════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .9s ease, transform .9s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ═══════════ ⑪ 响应式 ═══════════ */
+@media (min-width: 480px) {
+  .hero-names { font-size: 34px; }
+  .vertical { font-size: 19px; }
+}
+@media (min-width: 768px) {
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    box-shadow: 0 0 60px rgba(0, 0, 0, .4);
+  }
+  .hero-card, .invite-card, .info-card, .traffic-list, .map-box, .footer-inner { max-width: 440px; }
+  .hero-names { font-size: 38px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 花瓣层 -->
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<!-- 音乐开关 -->
+<button class="music-btn" id="musicBtn" aria-label="音乐开关" title="点击播放背景音乐">
+  <span class="disc"></span>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <path d="M9 18V6.5L19 4v11.5" stroke="#D8B25C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6.5" cy="18" r="2.5" fill="#D8B25C"/>
+    <circle cx="16.5" cy="15.5" r="2.5" fill="#D8B25C"/>
+  </svg>
+</button>
+
+<div class="page">
+
+  <!-- ═══ 封面 ═══ -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="chinese-card hero-card">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner br"></i><i class="corner bl"></i>
+        <div class="clouds">
+          <svg width="58" height="34" viewBox="0 0 60 36" fill="none" stroke="#C9A227" stroke-width="1.4" stroke-linecap="round">
+            <path d="M6 28c-5-1-7-6-2-9-1-5 5-8 8-4 2-5 9-7 12-2 5-1 9 3 7 7 4 2 2 7-3 8H6z"/>
+            <path d="M20 12c-2-4-8-4-10 0" opacity=".7"/>
+          </svg>
+          <svg width="58" height="34" viewBox="0 0 60 36" fill="none" stroke="#C9A227" stroke-width="1.4" stroke-linecap="round">
+            <path d="M6 28c-5-1-7-6-2-9-1-5 5-8 8-4 2-5 9-7 12-2 5-1 9 3 7 7 4 2 2 7-3 8H6z"/>
+            <path d="M20 12c-2-4-8-4-10 0" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="xi-badge">囍</div>
+        <div class="cover-photo" id="coverPhoto">
+          <div class="photo-hint">
+            <svg width="30" height="24" viewBox="0 0 30 24" fill="none" stroke="#8A6D3F" stroke-width="1.2">
+              <rect x="2" y="5" width="26" height="16" rx="2"/>
+              <circle cx="15" cy="12.5" r="3.5"/>
+              <path d="M10 5l1.5-3h7L20 5"/>
+            </svg>
+            <span>婚纱照片</span>
+            <span>替换 cover.jpg</span>
+          </div>
+        </div>
+        <h1 class="hero-names"><span data-bind="groomName"></span><span class="dot"></span><span data-bind="brideName"></span></h1>
+        <div class="gold-dash"></div>
+        <p class="hero-date" data-row><span data-bind="dateText"></span></p>
+        <p class="hero-lunar" data-row><span data-bind="lunarText"></span></p>
+        <p class="hero-word">诚邀您参加我们的婚礼</p>
+      </div>
+    </div>
+    <div class="scroll-hint">下滑开启</div>
+  </header>
+
+  <!-- ═══ 邀请正文（竖排） ═══ -->
+  <section class="invite">
+    <h2 class="invite-title reveal">婚礼请柬</h2>
+    <div class="chinese-card invite-card reveal">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner br"></i><i class="corner bl"></i>
+      <p class="vertical">
+        谨定于<span class="em" data-bind="dateText"></span>为<span class="em" data-bind="groomName"></span>先生与<span class="em" data-bind="brideName"></span>女士举行结婚典礼<span class="brk"></span>恭请<span class="em" data-bind="invitee"></span>光临<span class="brk"></span>席设<span class="em" data-bind="hotelName"></span>届时敬备喜宴<span class="brk"></span>新郎新娘敬邀
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ 婚礼信息 ═══ -->
+  <section class="info">
+    <div class="section-head reveal">
+      <span class="cn">婚礼信息</span>
+      <div class="bar"></div>
+    </div>
+    <div class="chinese-card info-card reveal">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner br"></i><i class="corner bl"></i>
+      <div class="info-row">
+        <span class="label">仪式时间</span>
+        <span class="value" data-bind="timeText"></span>
+      </div>
+      <div class="info-row">
+        <span class="label">仪式日期</span>
+        <span class="value" data-bind="dateText"></span>
+      </div>
+      <div class="info-row" data-row>
+        <span class="label">农历</span>
+        <span class="value" data-bind="lunarText"></span>
+      </div>
+      <div class="info-row">
+        <span class="label">婚宴地点</span>
+        <span class="value" data-bind="hotelName"></span>
+      </div>
+      <div class="info-row">
+        <span class="label">详细地址</span>
+        <span class="value" data-bind="address"></span>
+      </div>
+      <div class="schedule">
+        <p class="schedule-title">婚礼流程</p>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule1Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule1Text"></span>
+        </div>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule2Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule2Text"></span>
+        </div>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule3Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule3Text"></span>
+        </div>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule4Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule4Text"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 交通与地图 ═══ -->
+  <section class="map-section">
+    <div class="section-head reveal">
+      <span class="cn">交通指引</span>
+      <div class="bar"></div>
+    </div>
+    <div class="traffic-list reveal">
+      <div class="traffic-item" data-row>
+        <span class="t-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <rect x="4" y="4" width="16" height="14" rx="3"/>
+            <path d="M8 21h8M12 18v3"/>
+            <path d="M8.5 9.5h7M8.5 12.5h4"/>
+          </svg>
+        </span>
+        <span class="t-text" data-bind="traffic1"></span>
+      </div>
+      <div class="traffic-item" data-row>
+        <span class="t-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5h12v10H4zM16 9h3l2 3v3h-5z"/>
+            <circle cx="7.5" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/>
+          </svg>
+        </span>
+        <span class="t-text" data-bind="traffic2"></span>
+      </div>
+      <div class="traffic-item" data-row>
+        <span class="t-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17l5-12 4 6 3-3 6 9H3z"/>
+            <circle cx="7" cy="18.5" r="1.6"/><circle cx="17" cy="18.5" r="1.6"/>
+          </svg>
+        </span>
+        <span class="t-text" data-bind="traffic3"></span>
+      </div>
+    </div>
+    <div class="map-box reveal">
+      <!-- ⬇⬇⬇ 在这里粘贴高德/百度地图的 iframe 嵌入代码（粘贴后自动覆盖下方占位提示）⬇⬇⬇
+           获取方法（详见 README.md）：
+           高德：https://lbs.amap.com/tools/picker → 搜索地点 → 点击分享 → 复制"网页嵌入代码"
+           百度：https://api.map.baidu.com/lbsapi/getpoint/ → 搜索地点 → 复制"获取代码"
+           注意：只粘贴纯 <iframe> 标签，不要粘贴含 <script> 的 JS API 代码 -->
+      <div class="map-placeholder">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8A6D3F" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11z"/>
+          <circle cx="12" cy="10" r="2.4"/>
+        </svg>
+        <span>地图区域 · 请替换为真实地图嵌入代码</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 页脚 ═══ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="seal reveal">永结同心</div>
+      <p class="footer-names reveal"><span data-bind="groomName"></span> &amp; <span data-bind="brideName"></span></p>
+      <p class="footer-date reveal">2026 · 10 · 01</p>
+    </div>
+  </footer>
+
+</div>
+
+<audio id="bgm" loop preload="none"></audio>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   配置区：只改这里！改完保存刷新即可生效。
+   - 留空 "" 的字段：对应行自动隐藏（如 lunarText 留空则农历行不显示）
+   - coverPhoto 取值：""（保持占位） / "cover.jpg"（同目录照片） / "data:image/jpeg;base64,..."（内嵌）
+   - musicSrc 取值：""（隐藏音乐按钮） / "music.mp3"（同目录音乐） / "data:audio/mpeg;base64,..."（内嵌）
+   ═══════════════════════════════════════════════════════════ */
+var CONFIG = {
+  groomName: "张伟",
+  brideName: "李婷",
+  dateText: "2026年10月1日 · 星期四",
+  lunarText: "农历八月廿一",
+  timeText: "11:08",
+  hotelName: "某某大酒店 · 三楼宴会厅",
+  address: "XX市XX区XX路88号",
+  invitee: "尊敬的宾客",
+  schedule1Time: "10:00", schedule1Text: "迎宾签到",
+  schedule2Time: "11:08", schedule2Text: "婚礼仪式",
+  schedule3Time: "12:00", schedule3Text: "喜宴开席",
+  schedule4Time: "14:00", schedule4Text: "合影留念",
+  traffic1: "地铁 X 号线至 X 站，出站步行 5 分钟",
+  traffic2: "公交 X 路至 X 站，下车即达",
+  traffic3: "自驾导航搜索「某某大酒店」，停车场免费",
+  coverPhoto: "",
+  musicSrc: "music.mp3"
+};
+/* ═══════════ 以下为初始化逻辑，无需修改 ═══════════ */
+
+(function () {
+  /* ---- 1. 数据绑定：CONFIG → [data-bind]，空值隐藏所在行 ---- */
+  var binds = document.querySelectorAll("[data-bind]");
+  for (var i = 0; i < binds.length; i++) {
+    var el = binds[i];
+    var val = CONFIG[el.getAttribute("data-bind")];
+    if (val === undefined || val === "") {
+      var row = el.parentNode;
+      while (row && row !== document.body && !(row.getAttribute && row.getAttribute("data-row"))) {
+        row = row.parentNode;
+      }
+      if (row && row.getAttribute && row.getAttribute("data-row")) row.classList.add("hidden");
+    } else {
+      el.textContent = val;
+    }
+  }
+
+  /* ---- 2. 封面照片 ---- */
+  var photoBox = document.getElementById("coverPhoto");
+  if (photoBox && CONFIG.coverPhoto) {
+    var img = new Image();
+    img.alt = "";
+    img.onload = function () { photoBox.appendChild(img); photoBox.classList.add("has-photo"); };
+    img.onerror = function () { console.warn("封面照片加载失败，请检查 CONFIG.coverPhoto"); };
+    img.src = CONFIG.coverPhoto;
+  }
+
+  /* ---- 3. 背景音乐（首次点击时加载并播放，满足微信 iOS 手势内播放限制）---- */
+  var btn = document.getElementById("musicBtn");
+  var bgm = document.getElementById("bgm");
+  if (CONFIG.musicSrc) {
+    var playing = false;
+    btn.addEventListener("click", function () {
+      if (!bgm.getAttribute("src")) bgm.setAttribute("src", CONFIG.musicSrc);
+      if (playing) {
+        bgm.pause();
+      } else {
+        var pr = bgm.play();
+        if (pr && pr.catch) pr.catch(function () { playing = false; btn.classList.remove("playing"); });
+      }
+    });
+    bgm.addEventListener("play", function () { playing = true; btn.classList.add("playing"); });
+    bgm.addEventListener("pause", function () { playing = false; btn.classList.remove("playing"); });
+    bgm.addEventListener("error", function () {
+      btn.classList.add("music-error");
+      console.warn("音乐文件未找到，请检查 CONFIG.musicSrc（文件需与 HTML 同目录）");
+    });
+  } else {
+    btn.style.display = "none";
+  }
+
+  /* ---- 4. 花瓣 ---- */
+  var petalsWrap = document.getElementById("petals");
+  var reduced = false;
+  try { if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) reduced = true; } catch (e) {}
+  if (petalsWrap && !reduced) {
+    var count = window.innerWidth < 480 ? 14 : 22;
+    try { if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) count = Math.floor(count / 2); } catch (e) {}
+    var frag = document.createDocumentFragment();
+    for (var p = 0; p < count; p++) {
+      var petal = document.createElement("div");
+      petal.className = "petal";
+      var size = 6 + Math.random() * 16;
+      var dur = 8 + Math.random() * 6;
+      var drift = 20 + Math.random() * 40;
+      petal.style.width = size + "px";
+      petal.style.height = Math.round(size * 0.62) + "px";
+      petal.style.left = (Math.random() * 100) + "vw";
+      petal.style.setProperty("--dur", dur + "s");
+      petal.style.setProperty("--drift", drift + "px");
+      petal.style.setProperty("--driftN", (-drift) + "px");
+      petal.style.setProperty("--delay", (-Math.random() * dur) + "s");
+      petal.style.setProperty("--rot1", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--rot2", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--rot3", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--rot4", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--op", (0.3 + Math.random() * 0.4).toFixed(2));
+      frag.appendChild(petal);
+    }
+    petalsWrap.appendChild(frag);
+  }
+
+  /* ---- 5. 滚动淡入 ---- */
+  var items = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      for (var e = 0; e < entries.length; e++) {
+        if (entries[e].isIntersecting) {
+          entries[e].target.classList.add("is-visible");
+          io.unobserve(entries[e].target);
+        }
+      }
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    for (var r = 0; r < items.length; r++) io.observe(items[r]);
+  } else {
+    for (var d = 0; d < items.length; d++) items[d].classList.add("is-visible");
+  }
+
+  /* ---- 6. 封面开场淡入 ---- */
+  document.addEventListener("DOMContentLoaded", function () {
+    document.body.classList.add("ready");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>张伟 &amp; 李婷 的婚礼邀请函</title>
+<!-- ═══════════ 微信分享卡片（部署到 GitHub Pages 后请把 og:image 替换为绝对地址）═══════════ -->
+<meta property="og:title" content="张伟 &amp; 李婷 的婚礼邀请函">
+<meta property="og:description" content="2026年10月1日 · 星期四 · 某某大酒店 诚邀您的光临">
+<meta property="og:image" content="https://替换为你的用户名.github.io/wedding-invitation/cover.jpg">
+<meta property="og:type" content="website">
+<style>
+/* ═══════════ ① 变量 ═══════════ */
+:root {
+  --bg: #F7F5EE;         /* 奶白底 */
+  --card: #FFFDF9;       /* 卡片白 */
+  --green: #6F7D5C;      /* 主绿 */
+  --green-deep: #55614A; /* 深绿 */
+  --sage: #A8B49A;       /* 浅鼠尾草 */
+  --sage-pale: #DDE4D3;
+  --rose: #C2A98F;       /* 干玫瑰棕 */
+  --ink: #4A4A3F;        /* 主文字 */
+  --sub: #8B8B7C;        /* 次级文字 */
+  --line: #E4E0D2;
+  --shadow: rgba(90, 90, 60, .08);
+  --kai: "Kaiti SC", "STKaiti", "KaiTi", "Songti SC", "SimSun", serif;
+  --serif: Georgia, "Times New Roman", "Songti SC", "STSong", "SimSun", serif;
+  --sans: -apple-system, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+/* ═══════════ ② reset ═══════════ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink);
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.hidden { display: none !important; }
+img { display: block; }
+
+/* ═══════════ ③ 花瓣（绿叶 + 白花） ═══════════ */
+.petals {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+.petal {
+  position: absolute;
+  top: -6vh;
+  border-radius: 0 60% 0 60%;
+  background: linear-gradient(135deg, #93A37C 0%, #6F7D5C 60%, #55614A 100%);
+  opacity: var(--op, .5);
+  will-change: transform;
+  animation: petal-fall var(--dur) linear var(--delay) infinite;
+}
+.petal:nth-child(5n) {          /* 每隔 5 片混入白色小花点 */
+  border-radius: 50%;
+  background: #FFFDF6;
+  width: 6px !important;
+  height: 6px !important;
+  box-shadow: 0 0 4px rgba(255, 253, 246, .8);
+}
+@keyframes petal-fall {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(var(--drift), 28vh, 0) rotate(var(--rot1)); }
+  50%  { transform: translate3d(var(--driftN), 56vh, 0) rotate(var(--rot2)); }
+  75%  { transform: translate3d(var(--drift), 84vh, 0) rotate(var(--rot3)); }
+  100% { transform: translate3d(var(--driftN), 112vh, 0) rotate(var(--rot4)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .petals { display: none; }
+}
+
+/* ═══════════ ④ 音乐按钮 ═══════════ */
+.music-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 24px;
+  width: 48px; height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 253, 249, .94);
+  box-shadow: 0 4px 16px rgba(74, 74, 63, .16);
+  z-index: 10;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.music-btn svg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.music-btn .disc {
+  position: absolute;
+  top: -3px; left: -3px;
+  width: 54px; height: 54px;
+  border: 1px dashed var(--sage);
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+  animation-play-state: paused;
+}
+.music-btn.playing .disc { animation-play-state: running; }
+.music-btn.music-error { opacity: .35; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* ═══════════ ⑤ 封面 hero ═══════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px 64px;
+}
+.hero-inner { opacity: 0; transform: translateY(18px); transition: opacity 1.2s ease, transform 1.2s ease; }
+body.ready .hero-inner { opacity: 1; transform: none; }
+
+.vine-top { margin-bottom: 22px; }
+.hero-kicker {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: .4em;
+  color: var(--sage);
+  margin-bottom: 26px;
+}
+.cover-photo {
+  position: relative;
+  width: 232px; height: 292px;
+  margin: 0 auto 30px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #EFF2E7 0%, #DFE6D0 100%);
+  overflow: hidden;
+  box-shadow: 0 14px 34px var(--shadow);
+}
+.cover-photo::after {              /* 内衬圆角细线 */
+  content: "";
+  position: absolute;
+  top: 9px; left: 9px; right: 9px; bottom: 9px;
+  border: 1px solid rgba(111, 125, 92, .35);
+  border-radius: 17px;
+  pointer-events: none;
+}
+.cover-photo.has-photo::after { display: none; }
+.cover-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+}
+.photo-hint {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--sub);
+  font-size: 12px;
+  letter-spacing: .2em;
+}
+.photo-hint svg { opacity: .55; }
+.cover-photo.has-photo .photo-hint { display: none; }
+
+.hero-names {
+  font-family: var(--kai);
+  font-size: 36px;
+  font-weight: normal;
+  letter-spacing: .22em;
+  text-indent: .22em;
+  color: var(--green-deep);
+  margin-bottom: 18px;
+}
+.hero-names .amp {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--rose);
+  vertical-align: 10px;
+  margin: 0 8px;
+}
+.leaf-sep { margin: 0 auto 18px; }
+.hero-date {
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: .16em;
+  color: var(--sub);
+  margin-bottom: 6px;
+}
+.hero-lunar {
+  font-size: 13px;
+  letter-spacing: .3em;
+  color: var(--sage);
+}
+.vine-bottom { margin-top: 30px; }
+.scroll-hint {
+  position: absolute;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  color: var(--sage);
+  font-family: Georgia, serif;
+  font-size: 10px;
+  letter-spacing: .4em;
+  animation: float 2.4s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+
+/* ═══════════ ⑥ 邀请正文 ═══════════ */
+.invite { padding: 40px 24px 56px; }
+.forest-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 12px 30px var(--shadow);
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 44px 30px;
+  text-align: center;
+}
+.invite-title {
+  font-family: var(--kai);
+  font-size: 26px;
+  letter-spacing: .4em;
+  text-indent: .4em;
+  color: var(--green-deep);
+  margin-bottom: 26px;
+}
+.invitee-name {
+  font-family: var(--kai);
+  font-size: 19px;
+  letter-spacing: .1em;
+  color: var(--rose);
+  margin-bottom: 26px;
+}
+.invite-text {
+  max-width: 420px;
+  margin: 0 auto;
+  color: #63634F;
+  font-size: 15px;
+}
+.invite-text p { margin-bottom: 14px; }
+.invite-text .em { color: var(--green); }
+.invite-sign {
+  margin-top: 30px;
+  font-size: 13px;
+  letter-spacing: .22em;
+  color: var(--sub);
+}
+
+/* ═══════════ ⑦ 婚礼信息 ═══════════ */
+.info { padding: 0 24px 56px; }
+.section-head {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.section-head .en {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: .4em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display: block;
+  margin-bottom: 8px;
+}
+.section-head .cn {
+  font-family: var(--kai);
+  font-size: 21px;
+  letter-spacing: .4em;
+  text-indent: .4em;
+  color: var(--green-deep);
+}
+.info-card { padding: 38px 30px; text-align: left; }
+.info-row {
+  display: flex;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.info-row:last-of-type { border-bottom: none; }
+.info-row .label {
+  flex: 0 0 72px;
+  font-size: 12px;
+  letter-spacing: .28em;
+  color: var(--sage);
+}
+.info-row .value {
+  flex: 1;
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: .06em;
+  color: var(--ink);
+}
+.schedule { margin-top: 24px; }
+.schedule-title {
+  text-align: center;
+  font-family: var(--kai);
+  font-size: 14px;
+  letter-spacing: .4em;
+  color: var(--green);
+  margin-bottom: 18px;
+}
+.schedule-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.schedule-item .s-time {
+  flex: 0 0 62px;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  letter-spacing: .06em;
+  color: var(--green);
+  text-align: right;
+}
+.schedule-item .s-dot {
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.schedule-item .s-dot::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--sage-pale);
+  box-shadow: inset 0 0 0 2px var(--green);
+}
+.schedule-item .s-text {
+  flex: 1;
+  font-size: 15px;
+  letter-spacing: .1em;
+  color: #63634F;
+}
+
+/* ═══════════ ⑧ 地图与交通 ═══════════ */
+.map-section { padding: 0 24px 56px; }
+.traffic-list { max-width: 540px; margin: 0 auto 30px; }
+.traffic-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 11px 0;
+}
+.traffic-item .t-icon {
+  flex: 0 0 40px;
+  color: var(--green);
+  padding-top: 2px;
+}
+.traffic-item .t-text {
+  flex: 1;
+  font-size: 14.5px;
+  color: #63634F;
+  letter-spacing: .04em;
+}
+.map-box {
+  position: relative;
+  max-width: 540px;
+  margin: 0 auto;
+  padding-bottom: 72%;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 12px 30px var(--shadow);
+}
+.map-box iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+.map-placeholder {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 2px dashed var(--sage);
+  border-radius: 24px;
+  color: var(--sub);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-align: center;
+  padding: 20px;
+  background: var(--card);
+}
+.map-placeholder svg { opacity: .55; }
+
+/* ═══════════ ⑨ 页脚 ═══════════ */
+.footer {
+  padding: 30px 24px 90px;
+  text-align: center;
+}
+.bouquet { margin-bottom: 26px; }
+.footer-bless {
+  font-family: var(--kai);
+  font-size: 15px;
+  letter-spacing: .14em;
+  line-height: 2.3;
+  color: #63634F;
+  margin-bottom: 32px;
+}
+.footer-names {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: .2em;
+  color: var(--green);
+}
+.footer-date {
+  margin-top: 10px;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  letter-spacing: .3em;
+  color: var(--sub);
+}
+
+/* ═══════════ ⑩ 滚动淡入 ═══════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .9s ease, transform .9s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ═══════════ ⑪ 响应式 ═══════════ */
+@media (min-width: 480px) {
+  .hero-names { font-size: 42px; }
+  .invite-text { font-size: 16px; }
+}
+@media (min-width: 768px) {
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    box-shadow: 0 0 60px var(--shadow);
+    background: var(--bg);
+  }
+  .hero-names { font-size: 48px; }
+  .cover-photo { width: 252px; height: 316px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 花瓣层 -->
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<!-- 音乐开关 -->
+<button class="music-btn" id="musicBtn" aria-label="音乐开关" title="点击播放背景音乐">
+  <span class="disc"></span>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <path d="M9 18V6.5L19 4v11.5" stroke="#6F7D5C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6.5" cy="18" r="2.5" fill="#6F7D5C"/>
+    <circle cx="16.5" cy="15.5" r="2.5" fill="#6F7D5C"/>
+  </svg>
+</button>
+
+<div class="page">
+
+  <!-- ═══ 封面 ═══ -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="vine-top">
+        <svg width="200" height="52" viewBox="0 0 200 52" fill="none">
+          <path d="M6 44c26-20 44-22 62-6 14 12 30 14 46 2 10-8 22-8 34 0 12 8 24 6 46-4" stroke="#A8B49A" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M6 44c8-18 4-28-2-36M44 38c2-14-2-22-8-28M90 40c3-14 0-22-6-28M136 42c2-12-1-20-6-26M182 40c4-12 2-20-3-26" stroke="#A8B49A" stroke-width="1.1" stroke-linecap="round"/>
+          <ellipse cx="4" cy="8" rx="5" ry="2.4" transform="rotate(-40 4 8)" fill="#C5CFB2"/>
+          <ellipse cx="36" cy="10" rx="5" ry="2.4" transform="rotate(-40 36 10)" fill="#C5CFB2"/>
+          <ellipse cx="84" cy="12" rx="5" ry="2.4" transform="rotate(-40 84 12)" fill="#C5CFB2"/>
+          <ellipse cx="130" cy="16" rx="5" ry="2.4" transform="rotate(-40 130 16)" fill="#C5CFB2"/>
+          <ellipse cx="178" cy="14" rx="5" ry="2.4" transform="rotate(-40 178 14)" fill="#C5CFB2"/>
+          <circle cx="20" cy="30" r="3" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+          <circle cx="112" cy="26" r="3" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+          <circle cx="158" cy="30" r="3" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        </svg>
+      </div>
+      <p class="hero-kicker">Our Wedding</p>
+      <div class="cover-photo" id="coverPhoto">
+        <div class="photo-hint">
+          <svg width="30" height="24" viewBox="0 0 30 24" fill="none" stroke="#8B8B7C" stroke-width="1.2">
+            <rect x="2" y="5" width="26" height="16" rx="2"/>
+            <circle cx="15" cy="12.5" r="3.5"/>
+            <path d="M10 5l1.5-3h7L20 5"/>
+          </svg>
+          <span>封面照片</span>
+          <span>替换 cover.jpg</span>
+        </div>
+      </div>
+      <h1 class="hero-names"><span data-bind="groomName"></span><span class="amp">&amp;</span><span data-bind="brideName"></span></h1>
+      <div class="leaf-sep">
+        <svg width="120" height="14" viewBox="0 0 120 14" fill="none">
+          <path d="M2 8h40M78 8h40" stroke="#C2A98F" stroke-width="1"/>
+          <ellipse cx="60" cy="7" rx="9" ry="5" fill="#DDE4D3"/>
+          <path d="M60 2v10" stroke="#A8B49A" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="hero-date" data-row><span data-bind="dateText"></span></p>
+      <p class="hero-lunar" data-row><span data-bind="lunarText"></span></p>
+      <div class="vine-bottom">
+        <svg width="200" height="52" viewBox="0 0 200 52" fill="none">
+          <path d="M194 8c-26 20-44 22-62 6-14-12-30-14-46-2-10 8-22 8-34 0-12-8-24-6-46 4" stroke="#A8B49A" stroke-width="1.4" stroke-linecap="round"/>
+          <ellipse cx="60" cy="34" rx="5" ry="2.4" transform="rotate(-30 60 34)" fill="#C5CFB2"/>
+          <ellipse cx="110" cy="38" rx="5" ry="2.4" transform="rotate(-30 110 38)" fill="#C5CFB2"/>
+          <ellipse cx="160" cy="36" rx="5" ry="2.4" transform="rotate(-30 160 36)" fill="#C5CFB2"/>
+          <circle cx="85" cy="24" r="3" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+          <circle cx="135" cy="20" r="3" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        </svg>
+      </div>
+    </div>
+    <div class="scroll-hint">SCROLL</div>
+  </header>
+
+  <!-- ═══ 邀请正文 ═══ -->
+  <section class="invite">
+    <div class="forest-card reveal">
+      <h2 class="invite-title">诚邀</h2>
+      <p class="invitee-name" data-row>亲爱的 <span data-bind="invitee"></span></p>
+      <div class="invite-text">
+        <p>我们将在 <span class="em" data-bind="dateText"></span>，于<br><span class="em" data-bind="hotelName"></span><br>举行结婚典礼。</p>
+        <p>您的到来，将是这场仪式上<br>最温暖的祝福。</p>
+      </div>
+      <p class="invite-sign">新郎 <span data-bind="groomName"></span> &amp; 新娘 <span data-bind="brideName"></span> 敬邀</p>
+    </div>
+  </section>
+
+  <!-- ═══ 婚礼信息 ═══ -->
+  <section class="info">
+    <div class="section-head reveal">
+      <span class="en">Ceremony</span>
+      <span class="cn">婚礼信息</span>
+    </div>
+    <div class="forest-card info-card reveal">
+      <div class="info-row">
+        <span class="label">时 间</span>
+        <span class="value" data-bind="timeText"></span>
+      </div>
+      <div class="info-row">
+        <span class="label">日 期</span>
+        <span class="value" data-bind="dateText"></span>
+      </div>
+      <div class="info-row" data-row>
+        <span class="label">农 历</span>
+        <span class="value" data-bind="lunarText"></span>
+      </div>
+      <div class="info-row">
+        <span class="label">地 点</span>
+        <span class="value" data-bind="hotelName"></span>
+      </div>
+      <div class="info-row">
+        <span class="label">地 址</span>
+        <span class="value" data-bind="address"></span>
+      </div>
+      <div class="schedule">
+        <p class="schedule-title">婚礼流程</p>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule1Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule1Text"></span>
+        </div>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule2Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule2Text"></span>
+        </div>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule3Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule3Text"></span>
+        </div>
+        <div class="schedule-item" data-row>
+          <span class="s-time" data-bind="schedule4Time"></span>
+          <span class="s-dot"></span>
+          <span class="s-text" data-bind="schedule4Text"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 交通与地图 ═══ -->
+  <section class="map-section">
+    <div class="section-head reveal">
+      <span class="en">Getting There</span>
+      <span class="cn">交通指引</span>
+    </div>
+    <div class="traffic-list reveal">
+      <div class="traffic-item" data-row>
+        <span class="t-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <rect x="4" y="4" width="16" height="14" rx="3"/>
+            <path d="M8 21h8M12 18v3"/>
+            <path d="M8.5 9.5h7M8.5 12.5h4"/>
+          </svg>
+        </span>
+        <span class="t-text" data-bind="traffic1"></span>
+      </div>
+      <div class="traffic-item" data-row>
+        <span class="t-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5h12v10H4zM16 9h3l2 3v3h-5z"/>
+            <circle cx="7.5" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/>
+          </svg>
+        </span>
+        <span class="t-text" data-bind="traffic2"></span>
+      </div>
+      <div class="traffic-item" data-row>
+        <span class="t-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17l5-12 4 6 3-3 6 9H3z"/>
+            <circle cx="7" cy="18.5" r="1.6"/><circle cx="17" cy="18.5" r="1.6"/>
+          </svg>
+        </span>
+        <span class="t-text" data-bind="traffic3"></span>
+      </div>
+    </div>
+    <div class="map-box reveal">
+      <!-- ⬇⬇⬇ 在这里粘贴高德/百度地图的 iframe 嵌入代码（粘贴后自动覆盖下方占位提示）⬇⬇⬇
+           获取方法（详见 README.md）：
+           高德：https://lbs.amap.com/tools/picker → 搜索地点 → 点击分享 → 复制"网页嵌入代码"
+           百度：https://api.map.baidu.com/lbsapi/getpoint/ → 搜索地点 → 复制"获取代码"
+           注意：只粘贴纯 <iframe> 标签，不要粘贴含 <script> 的 JS API 代码 -->
+      <div class="map-placeholder">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8B8B7C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11z"/>
+          <circle cx="12" cy="10" r="2.4"/>
+        </svg>
+        <span>地图区域 · 请替换为真实地图嵌入代码</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 页脚 ═══ -->
+  <footer class="footer">
+    <div class="bouquet reveal">
+      <svg width="150" height="74" viewBox="0 0 150 74" fill="none">
+        <path d="M75 74c0-22 0-36 2-44M58 74c-4-18-2-30 4-40M92 74c4-18 2-30-4-40M46 74c-8-14-8-24-2-32M104 74c8-14 8-24 2-32" stroke="#A8B49A" stroke-width="1.3" stroke-linecap="round"/>
+        <ellipse cx="66" cy="24" rx="8" ry="3.6" transform="rotate(-35 66 24)" fill="#C5CFB2"/>
+        <ellipse cx="84" cy="22" rx="8" ry="3.6" transform="rotate(35 84 22)" fill="#C5CFB2"/>
+        <ellipse cx="40" cy="38" rx="7" ry="3.2" transform="rotate(-40 40 38)" fill="#C5CFB2"/>
+        <ellipse cx="110" cy="38" rx="7" ry="3.2" transform="rotate(40 110 38)" fill="#C5CFB2"/>
+        <ellipse cx="75" cy="16" rx="7" ry="3.2" fill="#C5CFB2"/>
+        <circle cx="66" cy="24" r="4.6" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        <circle cx="84" cy="22" r="4.6" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        <circle cx="40" cy="38" r="4.2" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        <circle cx="110" cy="38" r="4.2" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        <circle cx="75" cy="16" r="4.2" fill="#FFFDF6" stroke="#A8B49A" stroke-width="1"/>
+        <path d="M22 60c16-8 34-8 53 0M75 74V60" stroke="#C2A98F" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M22 60l6 6M128 60l-6 6" stroke="#C2A98F" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <p class="footer-bless reveal">愿往后余生<br>冷暖有相知 · 喜乐有分享</p>
+    <p class="footer-names reveal"><span data-bind="groomName"></span> &amp; <span data-bind="brideName"></span></p>
+    <p class="footer-date reveal">2026 · 10 · 01</p>
+  </footer>
+
+</div>
+
+<audio id="bgm" loop preload="none"></audio>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   配置区：只改这里！改完保存刷新即可生效。
+   - 留空 "" 的字段：对应行自动隐藏（如 lunarText 留空则农历行不显示）
+   - coverPhoto 取值：""（保持占位） / "cover.jpg"（同目录照片） / "data:image/jpeg;base64,..."（内嵌）
+   - musicSrc 取值：""（隐藏音乐按钮） / "music.mp3"（同目录音乐） / "data:audio/mpeg;base64,..."（内嵌）
+   ═══════════════════════════════════════════════════════════ */
+var CONFIG = {
+  groomName: "张伟",
+  brideName: "李婷",
+  dateText: "2026年10月1日 · 星期四",
+  lunarText: "农历八月廿一",
+  timeText: "11:08",
+  hotelName: "某某大酒店 · 三楼宴会厅",
+  address: "XX市XX区XX路88号",
+  invitee: "尊敬的宾客",
+  schedule1Time: "10:00", schedule1Text: "迎宾签到",
+  schedule2Time: "11:08", schedule2Text: "婚礼仪式",
+  schedule3Time: "12:00", schedule3Text: "喜宴开席",
+  schedule4Time: "14:00", schedule4Text: "合影留念",
+  traffic1: "地铁 X 号线至 X 站，出站步行 5 分钟",
+  traffic2: "公交 X 路至 X 站，下车即达",
+  traffic3: "自驾导航搜索「某某大酒店」，停车场免费",
+  coverPhoto: "",
+  musicSrc: "music.mp3"
+};
+/* ═══════════ 以下为初始化逻辑，无需修改 ═══════════ */
+
+(function () {
+  /* ---- 1. 数据绑定：CONFIG → [data-bind]，空值隐藏所在行 ---- */
+  var binds = document.querySelectorAll("[data-bind]");
+  for (var i = 0; i < binds.length; i++) {
+    var el = binds[i];
+    var val = CONFIG[el.getAttribute("data-bind")];
+    if (val === undefined || val === "") {
+      var row = el.parentNode;
+      while (row && row !== document.body && !(row.getAttribute && row.getAttribute("data-row"))) {
+        row = row.parentNode;
+      }
+      if (row && row.getAttribute && row.getAttribute("data-row")) row.classList.add("hidden");
+    } else {
+      el.textContent = val;
+    }
+  }
+
+  /* ---- 2. 封面照片 ---- */
+  var photoBox = document.getElementById("coverPhoto");
+  if (photoBox && CONFIG.coverPhoto) {
+    var img = new Image();
+    img.alt = "";
+    img.onload = function () { photoBox.appendChild(img); photoBox.classList.add("has-photo"); };
+    img.onerror = function () { console.warn("封面照片加载失败，请检查 CONFIG.coverPhoto"); };
+    img.src = CONFIG.coverPhoto;
+  }
+
+  /* ---- 3. 背景音乐（首次点击时加载并播放，满足微信 iOS 手势内播放限制）---- */
+  var btn = document.getElementById("musicBtn");
+  var bgm = document.getElementById("bgm");
+  if (CONFIG.musicSrc) {
+    var playing = false;
+    btn.addEventListener("click", function () {
+      if (!bgm.getAttribute("src")) bgm.setAttribute("src", CONFIG.musicSrc);
+      if (playing) {
+        bgm.pause();
+      } else {
+        var pr = bgm.play();
+        if (pr && pr.catch) pr.catch(function () { playing = false; btn.classList.remove("playing"); });
+      }
+    });
+    bgm.addEventListener("play", function () { playing = true; btn.classList.add("playing"); });
+    bgm.addEventListener("pause", function () { playing = false; btn.classList.remove("playing"); });
+    bgm.addEventListener("error", function () {
+      btn.classList.add("music-error");
+      console.warn("音乐文件未找到，请检查 CONFIG.musicSrc（文件需与 HTML 同目录）");
+    });
+  } else {
+    btn.style.display = "none";
+  }
+
+  /* ---- 4. 花瓣 ---- */
+  var petalsWrap = document.getElementById("petals");
+  var reduced = false;
+  try { if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) reduced = true; } catch (e) {}
+  if (petalsWrap && !reduced) {
+    var count = window.innerWidth < 480 ? 14 : 22;
+    try { if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) count = Math.floor(count / 2); } catch (e) {}
+    var frag = document.createDocumentFragment();
+    for (var p = 0; p < count; p++) {
+      var petal = document.createElement("div");
+      petal.className = "petal";
+      var size = 6 + Math.random() * 16;
+      var dur = 8 + Math.random() * 6;
+      var drift = 20 + Math.random() * 40;
+      petal.style.width = size + "px";
+      petal.style.height = Math.round(size * 0.62) + "px";
+      petal.style.left = (Math.random() * 100) + "vw";
+      petal.style.setProperty("--dur", dur + "s");
+      petal.style.setProperty("--drift", drift + "px");
+      petal.style.setProperty("--driftN", (-drift) + "px");
+      petal.style.setProperty("--delay", (-Math.random() * dur) + "s");
+      petal.style.setProperty("--rot1", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--rot2", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--rot3", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--rot4", Math.round(Math.random() * 360) + "deg");
+      petal.style.setProperty("--op", (0.3 + Math.random() * 0.4).toFixed(2));
+      frag.appendChild(petal);
+    }
+    petalsWrap.appendChild(frag);
+  }
+
+  /* ---- 5. 滚动淡入 ---- */
+  var items = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      for (var e = 0; e < entries.length; e++) {
+        if (entries[e].isIntersecting) {
+          entries[e].target.classList.add("is-visible");
+          io.unobserve(entries[e].target);
+        }
+      }
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    for (var r = 0; r < items.length; r++) io.observe(items[r]);
+  } else {
+    for (var d = 0; d < items.length; d++) items[d].classList.add("is-visible");
+  }
+
+  /* ---- 6. 封面开场淡入 ---- */
+  document.addEventListener("DOMContentLoaded", function () {
+    document.body.classList.add("ready");
+  });
+})();
+</script>
+</body>
+</html>
